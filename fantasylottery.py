@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import itertools, random, os
 
-st.set_page_config(page_title="Fantasy Draft Lottery", page_icon="🎲", layout="centered")
+st.set_page_config(page_title="Flensballers Fantasy Draft Lottery 2026", page_icon="🎲", layout="centered")
 
 # ============ TEAMDATEN ============
 teams = {
@@ -49,8 +49,8 @@ if "remaining_df" not in st.session_state:
         st.session_state.draft_order = [fixed_pick]
 
 # ============ UI ============
-st.title("🎲 Fantasy League Draft Lottery")
-st.write("Willkommen zur diesjährigen Ziehung!")
+st.title("🎲 Flensballers Fantasy Draft Lottery 2026")
+st.write("Wer kriegt Pick #2-#5?! Pick #1 wurde letztes Jahr hart erkämpft! Herzloichen Glückwunsch nochmal an Jonas!")
 st.markdown(f"**Pick #1:** 🏆 {fixed_pick} *(fest vergeben)*")
 st.divider()
 
@@ -59,7 +59,7 @@ with col1:
     combo = st.text_input("Gezogene Kombination eingeben (z. B. 1 5 7 11):", key="combo_input")
 
 with col2:
-    if st.button("🎯 Ziehung starten"):
+    if st.button("🎯 Ziehen"):
         combo_str = " ".join(sorted(combo.split()))
         row = st.session_state.remaining_df.loc[st.session_state.remaining_df["Kombination"] == combo_str]
         if not row.empty:
@@ -80,6 +80,33 @@ st.subheader("📊 Aktueller Draft-Order")
 for i, t in enumerate(st.session_state.draft_order, start=1):
     fest = " (fest)" if i == 1 else ""
     st.write(f"**Pick {i}:** {t}{fest}")
+
+# ============ AKTUELLE CHANCEN ============
+
+st.divider()
+st.subheader("📈 Aktuelle Wahrscheinlichkeiten (verbleibende Teams)")
+
+# Zähle, wie viele Kombinationen jedes Team noch hat
+remaining_counts = st.session_state.remaining_df["Team"].value_counts().sort_values(ascending=False)
+
+# Berechne die neuen Prozentwerte
+total_remaining = remaining_counts.sum()
+chances_df = pd.DataFrame({
+    "Team": remaining_counts.index,
+    "Verbleibende Lose": remaining_counts.values,
+    "Chance (%)": (remaining_counts / total_remaining * 100).round(2)
+})
+
+# Anzeige als Tabelle
+st.dataframe(chances_df, hide_index=True, use_container_width=True)
+
+# Optional: Balkendiagramm für visuelle Darstellung
+st.markdown("### 🎞️ Verteilung der Chancen")
+st.bar_chart(
+    data=chances_df.set_index("Team")["Chance (%)"],
+    height=400,
+    use_container_width=True
+)
 
 # ============ FORTSCHRITT SPEICHERN ============
 def save_state():
