@@ -124,7 +124,7 @@ from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 
 # ==================== LIVEANZEIGE ====================
-st.markdown(f"# 🎯 Verbleibende Kombinationen: **{len(st.session_state.remaining_df)}**")
+st.markdown(f"##### 🎯 Verbleibende Kombinationen: **{len(st.session_state.remaining_df)}**")
 
 # ==================== PDF-DOWNLOAD ====================
 def generate_draft_pdf(draft_order):
