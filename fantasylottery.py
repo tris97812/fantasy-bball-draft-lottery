@@ -177,7 +177,7 @@ if st.button("🎯 Kombination prüfen"):
             original_chances = teams[team]
             total_original = sum(teams.values())
             original_percent = round(original_chances / total_original * 100, 1)
-            st.success(f"🏆 {team} wurde gezogen! (Wahrscheinlichkeita auf No.1-Pick: {original_percent}%)")
+            st.success(f"🏆 {team} wurde gezogen! (Wahrscheinlichkeita auf No.2-Pick: {original_percent}%)")
             pick_number = len(st.session_state.draft_order)
             odds_for_pick = get_lottery_odds(team, pick_number)
             if odds_for_pick:
