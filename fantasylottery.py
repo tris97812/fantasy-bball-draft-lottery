@@ -119,6 +119,45 @@ if st.button("🎯 Kombination prüfen"):
             st.session_state.drawn_combos.append({"Kombination": combo_str, "Team": team, "Original_Chancen": original_chances})
     else:
         st.error("❌ Kombination nicht gefunden oder bereits gezogen.")
+from io import BytesIO
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
+
+# ==================== LIVEANZEIGE ====================
+st.markdown(f"### 🎯 Verbleibende Kombinationen: **{len(st.session_state.remaining_df)}**")
+
+# ==================== PDF-DOWNLOAD ====================
+def generate_draft_pdf(draft_order):
+    buffer = BytesIO()
+    p = canvas.Canvas(buffer, pagesize=A4)
+    width, height = A4
+
+    p.setFont("Helvetica-Bold", 16)
+    p.drawString(50, height - 50, "Flensballers Fantasy Draft Lottery 2026")
+
+    p.setFont("Helvetica", 12)
+    y = height - 90
+    for i, team in enumerate(draft_order, start=1):
+        p.drawString(50, y, f"{i}. {team}")
+        y -= 20
+        if y < 50:  # Neue Seite, falls zu lang
+            p.showPage()
+            p.setFont("Helvetica", 12)
+            y = height - 50
+
+    p.save()
+    buffer.seek(0)
+    return buffer
+
+# PDF-Button nur anzeigen, wenn Draft vollständig ist
+if len(st.session_state.draft_order) == len(teams) + 1:  # +1 wegen festem Pick
+    pdf_buffer = generate_draft_pdf(st.session_state.draft_order)
+    st.download_button(
+        label="📄 Draft-Reihenfolge als PDF herunterladen",
+        data=pdf_buffer,
+        file_name="draft_order.pdf",
+        mime="application/pdf"
+    )
 
 # ============ DRAFT-ORDER ANZEIGE ============
 st.subheader("📊 Aktueller Draft-Order")
