@@ -138,7 +138,7 @@ if "reset_inputs" not in st.session_state:
 
 # ============ UI ============
 st.title("🎲 Flensballers Fantasy Draft Lottery 2026")
-st.write("Wer kriegt Pick #2-#5?! Pick #1 wurde letztes Jahr hart erkämpft! Herzlichen Glückwunsch nochmal!")
+st.write("Pick #1 wurde letztes Jahr hart erkämpft! Shoutout an Jonas!! Doch wer kriegt die nächsten Picks? ")
 st.markdown(f"**Pick #1:** 🏆 {fixed_pick} *(fest vergeben)*")
 st.divider()
 
@@ -177,7 +177,7 @@ if st.button("🎯 Kombination prüfen"):
             original_chances = teams[team]
             total_original = sum(teams.values())
             original_percent = round(original_chances / total_original * 100, 1)
-            st.success(f"🏆 {team} wurde gezogen! (Original-Wahrscheinlichkeit: {original_percent}%)")
+            st.success(f"🏆 {team} wurde gezogen! (Wahrscheinlichkeita auf No.1-Pick: {original_percent}%)")
             pick_number = len(st.session_state.draft_order)
             odds_for_pick = get_lottery_odds(team, pick_number)
             if odds_for_pick:
