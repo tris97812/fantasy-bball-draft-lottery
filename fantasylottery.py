@@ -57,8 +57,8 @@ if "draft_order" not in st.session_state:
 if "remaining_df" not in st.session_state:
     st.session_state.remaining_df = generate_combos()
    
-    # ==== HIER CSV-Download BUTTON EINFÜGEN ====
-    csv_bytes = st.session_state.remaining_df.to_csv(index=False).encode('utf-8')
+# ==== HIER CSV-Download BUTTON EINFÜGEN ====
+csv_bytes = st.session_state.remaining_df.to_csv(index=False).encode('utf-8')
     st.download_button(
         label="📥 CSV der Zuteilungen herunterladen",
         data=csv_bytes,
