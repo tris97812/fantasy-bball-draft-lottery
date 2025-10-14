@@ -51,7 +51,12 @@ if "remaining_df" not in st.session_state:
 # ============ UI ============
 st.title("🎲 Flensballers Fantasy Draft Lottery 2026")
 st.write("Wer kriegt Pick #2-#5?! Pick #1 wurde letztes Jahr hart erkämpft! Herzloichen Glückwunsch nochmal an Jonas!")
+# ============ DRAFT-ORDER ANZEIGE ============
+st.subheader("📊 Aktueller Draft-Order")
 st.markdown(f"**Pick #1:** 🏆 {fixed_pick} *(fest vergeben)*")
+for i, t in enumerate(st.session_state.draft_order, start=1):
+    fest = " (fest)" if i == 1 else ""
+    st.write(f"**Pick {i}:** {t}{fest}")
 st.divider()
 # ============ ZAHLENEINGABE UND ZIEHUNG ============
 st.header("🎲 Neue Kombination ziehen")
@@ -101,14 +106,6 @@ if st.button("🎯 Kombination prüfen"):
             st.session_state.reset_inputs = True
     else:
         st.error("❌ Kombination nicht gefunden oder bereits gezogen.")
-
-
-
-# ============ DRAFT-ORDER ANZEIGE ============
-st.subheader("📊 Aktueller Draft-Order")
-for i, t in enumerate(st.session_state.draft_order, start=1):
-    fest = " (fest)" if i == 1 else ""
-    st.write(f"**Pick {i}:** {t}{fest}")
 
 # ============ AKTUELLE CHANCEN ============
 
