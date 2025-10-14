@@ -55,7 +55,7 @@ st.write("Wer kriegt Pick #2-#5?! Pick #1 wurde letztes Jahr hart erkämpft! Her
 st.subheader("📊 Aktueller Draft-Order")
 for i, t in enumerate(st.session_state.draft_order, start=1):
     fest = " (fest)" if i == 1 else ""
-    st.write(f"**Pick {i}:**(fest)")
+    st.write(f"**Pick {i}:**(Flensburger Fantasialand)")
 st.divider()
 # ============ ZAHLENEINGABE UND ZIEHUNG ============
 st.header("🎲 Neue Kombination ziehen")
