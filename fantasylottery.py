@@ -137,7 +137,7 @@ if "reset_inputs" not in st.session_state:
 
 
 # ============ UI ============
-st.title("🎲 Flensballers Fantasy Draft Lottery 2026")
+st.title("🏀 Flensballers Fantasy Draft Lottery 2026")
 st.write("Pick #1 wurde letztes Jahr hart erkämpft! Shoutout an Jonas!! Doch wer kriegt die nächsten Picks? ")
 st.divider()
 
