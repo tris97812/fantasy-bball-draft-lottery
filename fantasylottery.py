@@ -91,20 +91,26 @@ if st.button("🎯 Kombination prüfen"):
     row = st.session_state.remaining_df.loc[st.session_state.remaining_df["Kombination"] == combo_str]
 
     if not row.empty:
-        team = row.iloc[0]["Team"]
-        if team in st.session_state.draft_order:
-            st.warning(f"⚠️ {team} wurde bereits gezogen.")
-        else:
-            st.success(f"🏆 {team} wurde gezogen!")
-            st.session_state.remaining_df = st.session_state.remaining_df[
-                st.session_state.remaining_df["Team"] != team
-            ]
-            st.session_state.draft_order.append(team)
+    team = row.iloc[0]["Team"]
+    if team in st.session_state.draft_order:
+        st.warning(f"⚠️ {team} wurde bereits gezogen.")
+    else:
+        st.success(f"🏆 {team} wurde gezogen!")
 
-            # Reset der Inputs über Session-Flag
-            st.session_state.reset_inputs = True
+        # Team direkt aus dem Pool entfernen
+        st.session_state.remaining_df = st.session_state.remaining_df[
+            st.session_state.remaining_df["Team"] != team
+        ]
+
+        # Team direkt der Draft-Order hinzufügen
+        st.session_state.draft_order.append(team)
+
+        # Inputs zurücksetzen (optional)
+        st.session_state.reset_inputs = True
     else:
         st.error("❌ Kombination nicht gefunden oder bereits gezogen.")
+
+
 
 # ============ AKTUELLE CHANCEN ============
 
