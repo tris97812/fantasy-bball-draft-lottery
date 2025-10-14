@@ -53,15 +53,25 @@ st.title("🎲 Flensballers Fantasy Draft Lottery 2026")
 st.write("Wer kriegt Pick #2-#5?! Pick #1 wurde letztes Jahr hart erkämpft! Herzloichen Glückwunsch nochmal an Jonas!")
 st.markdown(f"**Pick #1:** 🏆 {fixed_pick} *(fest vergeben)*")
 st.divider()
+# ============ ZAHLENEINGABE UND ZIEHUNG ============
+st.header("🎲 Neue Kombination ziehen")
 
-col1, col2 = st.columns([2,1])
-with col1:
-    combo = st.text_input("Gezogene Kombination eingeben (z. B. 1 5 7 11):", key="combo_input")
+col1, col2, col3, col4 = st.columns(4)
+z1 = col1.number_input("Zahl 1", min_value=1, max_value=14, step=1, key="z1")
+z2 = col2.number_input("Zahl 2", min_value=1, max_value=14, step=1, key="z2")
+z3 = col3.number_input("Zahl 3", min_value=1, max_value=14, step=1, key="z3")
+z4 = col4.number_input("Zahl 4", min_value=1, max_value=14, step=1, key="z4")
 
-with col2:
-    if st.button("🎯 Ziehen"):
-        combo_str = " ".join(sorted(combo.split()))
+if st.button("🎯 Kombination prüfen"):
+    combo_nums = [int(z1), int(z2), int(z3), int(z4)]
+    
+    # Prüfe auf Duplikate
+    if len(set(combo_nums)) < 4:
+        st.warning("⚠️ Bitte vier verschiedene Zahlen eingeben!")
+    else:
+        combo_str = " ".join(map(str, sorted(combo_nums)))
         row = st.session_state.remaining_df.loc[st.session_state.remaining_df["Kombination"] == combo_str]
+
         if not row.empty:
             team = row.iloc[0]["Team"]
             if team in st.session_state.draft_order:
@@ -72,8 +82,15 @@ with col2:
                     st.session_state.remaining_df["Team"] != team
                 ]
                 st.session_state.draft_order.append(team)
+
+                # Felder leeren
+                st.session_state.z1 = 1
+                st.session_state.z2 = 1
+                st.session_state.z3 = 1
+                st.session_state.z4 = 1
         else:
             st.error("❌ Kombination nicht gefunden oder bereits gezogen.")
+
 
 # ============ DRAFT-ORDER ANZEIGE ============
 st.subheader("📊 Aktueller Draft-Order")
