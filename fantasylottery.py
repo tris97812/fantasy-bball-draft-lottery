@@ -124,7 +124,7 @@ from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 
 # ==================== LIVEANZEIGE ====================
-st.markdown(f"### 🎯 Verbleibende Kombinationen: **{len(st.session_state.remaining_df)}**")
+st.markdown(f"# 🎯 Verbleibende Kombinationen: **{len(st.session_state.remaining_df)}**")
 
 # ==================== PDF-DOWNLOAD ====================
 def generate_draft_pdf(draft_order):
@@ -132,15 +132,17 @@ def generate_draft_pdf(draft_order):
     p = canvas.Canvas(buffer, pagesize=A4)
     width, height = A4
 
+    # Titel
     p.setFont("Helvetica-Bold", 16)
     p.drawString(50, height - 50, "Flensballers Fantasy Draft Lottery 2026")
 
+    # Inhalt
     p.setFont("Helvetica", 12)
     y = height - 90
     for i, team in enumerate(draft_order, start=1):
         p.drawString(50, y, f"{i}. {team}")
         y -= 20
-        if y < 50:  # Neue Seite, falls zu lang
+        if y < 50:  # Neue Seite bei Platzmangel
             p.showPage()
             p.setFont("Helvetica", 12)
             y = height - 50
@@ -149,15 +151,14 @@ def generate_draft_pdf(draft_order):
     buffer.seek(0)
     return buffer
 
-# PDF-Button nur anzeigen, wenn Draft vollständig ist
-if len(st.session_state.draft_order) == len(teams) + 1:  # +1 wegen festem Pick
-    pdf_buffer = generate_draft_pdf(st.session_state.draft_order)
-    st.download_button(
-        label="📄 Draft-Reihenfolge als PDF herunterladen",
-        data=pdf_buffer,
-        file_name="draft_order.pdf",
-        mime="application/pdf"
-    )
+# PDF immer verfügbar machen
+pdf_buffer = generate_draft_pdf(st.session_state.draft_order)
+st.download_button(
+    label="📄 Draft-Reihenfolge als PDF herunterladen",
+    data=pdf_buffer,
+    file_name="draft_order.pdf",
+    mime="application/pdf"
+)
 
 # ============ DRAFT-ORDER ANZEIGE ============
 st.subheader("📊 Aktueller Draft-Order")
