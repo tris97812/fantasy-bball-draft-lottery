@@ -25,19 +25,6 @@ teams = {
 fixed_pick = "Flensburger Fantasialand"
 save_file = "lottery_state.csv"
 
-# ============ SESSION-STATE INITIALISIERUNG ============
-if "drawn_combos" not in st.session_state:
-    st.session_state.drawn_combos = []
-
-if "draft_order" not in st.session_state:
-    st.session_state.draft_order = [fixed_pick]
-
-if "remaining_df" not in st.session_state:
-    st.session_state.remaining_df = generate_combos()
-
-if "reset_inputs" not in st.session_state:
-    st.session_state.reset_inputs = False
-
 
 # ============ INITIALISIERUNG ============
 def generate_combos():
@@ -70,7 +57,20 @@ if "remaining_df" not in st.session_state:
 # Session-Flag für Input-Reset
 if "reset_inputs" not in st.session_state:
     st.session_state.reset_inputs = False
+  
+# ============ SESSION-STATE INITIALISIERUNG ============
+if "drawn_combos" not in st.session_state:
+    st.session_state.drawn_combos = []
 
+if "draft_order" not in st.session_state:
+    st.session_state.draft_order = [fixed_pick]
+
+if "remaining_df" not in st.session_state:
+    st.session_state.remaining_df = generate_combos()
+
+if "reset_inputs" not in st.session_state:
+    st.session_state.reset_inputs = False
+  
 # ============ UI ============
 st.title("🎲 Flensballers Fantasy Draft Lottery 2026")
 st.write("Wer kriegt Pick #2-#5?! Pick #1 wurde letztes Jahr hart erkämpft! Herzlichen Glückwunsch nochmal!")
