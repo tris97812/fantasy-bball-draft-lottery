@@ -161,7 +161,7 @@ z4 = col4.number_input("Zahl 4", min_value=1, max_value=14, step=1,
 
 if st.session_state.reset_inputs:
     st.session_state.reset_inputs = False
-
+    
 # ============ ZIEHUNGS-LOGIK ============
 if st.button("🎯 Kombination prüfen"):
     combo_nums = [int(z1), int(z2), int(z3), int(z4)]
@@ -177,19 +177,38 @@ if st.button("🎯 Kombination prüfen"):
             original_chances = teams[team]
             total_original = sum(teams.values())
             original_percent = round(original_chances / total_original * 100, 1)
-            st.success(f"🏆 {team} wurde gezogen! (Wahrscheinlichkeit auf No.2-Pick: {original_percent}%)")
+
+            # Pick hinzufügen
+            st.session_state.draft_order.append(team)
             pick_number = len(st.session_state.draft_order)
+
+            # Wahrscheinlichkeit für diesen Pick
             odds_for_pick = get_lottery_odds(team, pick_number)
+
+            # Originalposition für Differenz
+            original_rank = list(teams.keys()).index(team) + 2  # +2 wegen festem Pick #1
+            diff = original_rank - pick_number
+
+            st.success(f"🏆 {team} wurde gezogen! (Original-Wahrscheinlichkeit: {original_percent:.1f}%)")
             if odds_for_pick:
                 st.info(f"📊 Wahrscheinlichkeit für diesen Pick: {odds_for_pick:.2f}%")
 
+            # Differenz zur Originalposition
+            if diff > 0:
+                st.success(f"⬆️ Verbesserung gegenüber Originalplatz: +{diff}")
+            elif diff < 0:
+                st.error(f"⬇️ Verschlechterung gegenüber Originalplatz: {diff}")
+            else:
+                st.warning("⏺️ Keine Veränderung gegenüber Originalplatz")
+
+            # Entferne alle Combos des Teams aus dem Pott
             st.session_state.remaining_df = st.session_state.remaining_df[
                 st.session_state.remaining_df["Team"] != team]
-            st.session_state.draft_order.append(team)
             st.session_state.reset_inputs = True
             st.session_state.drawn_combos.append({"Kombination": combo_str, "Team": team, "Original_Chancen": original_chances})
     else:
         st.error("❌ Kombination nicht gefunden oder bereits gezogen.")
+
 from io import BytesIO
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
