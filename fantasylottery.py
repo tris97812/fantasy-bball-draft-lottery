@@ -108,10 +108,9 @@ if st.button("🎯 Kombination prüfen"):
             st.warning(f"⚠️ {team} wurde bereits gezogen.")
         else:
             original_chances = teams[team]  # Ursprüngliche Lose / Wahrscheinlichkeit
-            st.success(f"🏆 {team} wurde gezogen! (Original-Chancen: {original_chances})"
+            st.success(f"🏆 {team} wurde gezogen! (Original-Chancen: {original_chances})")
             st.session_state.remaining_df = st.session_state.remaining_df[
-                st.session_state.remaining_df["Team"] != team
-            ]
+                st.session_state.remaining_df["Team"] != team]
             st.session_state.draft_order.append(team)
             st.session_state.reset_inputs = True
             st.session_state.drawn_combos.append({"Kombination": combo_str, "Team": team, "Original_Chancen": original_chances})
