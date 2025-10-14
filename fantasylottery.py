@@ -2,8 +2,11 @@ import streamlit as st
 import pandas as pd
 import itertools, random, os
 
-st.set_page_config(page_title="Flensballers Fantasy Draft Lottery 2026",
-                   page_icon="🎲", layout="centered")
+st.set_page_config(
+    page_title="Flensballers Fantasy Draft Lottery 2026",
+    page_icon="🎲",
+    layout="centered"
+)
 
 # ============ TEAMDATEN ============
 teams = {
@@ -25,8 +28,7 @@ teams = {
 fixed_pick = "Flensburger Fantasialand"
 save_file = "lottery_state.csv"
 
-
-# ============ INITIALISIERUNG ============
+# ============ GENERATE COMBOS ============
 def generate_combos():
     numbers = list(range(1, 15))
     all_combos = list(itertools.combinations(numbers, 4))
@@ -45,19 +47,6 @@ def generate_combos():
 
     return pd.DataFrame(assignments)
 
-if "remaining_df" not in st.session_state:
-    if os.path.exists(save_file):
-        df = pd.read_csv(save_file)
-        st.session_state.remaining_df = df.copy()
-        st.session_state.draft_order = df[df["Pick"].notna()]["Team"].tolist()
-    else:
-        st.session_state.remaining_df = generate_combos()
-        st.session_state.draft_order = [fixed_pick]
-
-# Session-Flag für Input-Reset
-if "reset_inputs" not in st.session_state:
-    st.session_state.reset_inputs = False
-  
 # ============ SESSION-STATE INITIALISIERUNG ============
 if "drawn_combos" not in st.session_state:
     st.session_state.drawn_combos = []
@@ -70,7 +59,7 @@ if "remaining_df" not in st.session_state:
 
 if "reset_inputs" not in st.session_state:
     st.session_state.reset_inputs = False
-  
+
 # ============ UI ============
 st.title("🎲 Flensballers Fantasy Draft Lottery 2026")
 st.write("Wer kriegt Pick #2-#5?! Pick #1 wurde letztes Jahr hart erkämpft! Herzlichen Glückwunsch nochmal!")
@@ -114,6 +103,7 @@ if st.button("🎯 Kombination prüfen"):
             ]
             st.session_state.draft_order.append(team)
             st.session_state.reset_inputs = True
+            st.session_state.drawn_combos.append({"Kombination": combo_str, "Team": team})
     else:
         st.error("❌ Kombination nicht gefunden oder bereits gezogen.")
 
@@ -124,13 +114,6 @@ for i, t in enumerate(st.session_state.draft_order, start=1):
     st.write(f"**Pick {i}:** {t}{fest}")
 
 st.divider()
-
-st.subheader("📋 Bereits gezogene Kombinationen")
-if st.session_state.drawn_combos:
-    drawn_df = pd.DataFrame(st.session_state.drawn_combos)
-    st.table(drawn_df)
-else:
-    st.write("Noch keine Kombinationen gezogen.")
 
 # ============ DYNAMISCHE WAHRSCHEINLICHKEITEN ============
 st.subheader("📊 Aktuelle Gewinnchancen")
@@ -145,19 +128,27 @@ for team in teams.keys():
 
 prob_df = pd.DataFrame(prob_data).sort_values(by="Chancen (%)", ascending=False)
 st.table(prob_df)
-
-# Optional: Balkendiagramm
 st.bar_chart(prob_df.set_index("Team")["Chancen (%)"])
+
+# ============ GEZOGENE KOMBINATIONEN ============
+st.subheader("📋 Bereits gezogene Kombinationen")
+if st.session_state.drawn_combos:
+    drawn_df = pd.DataFrame(st.session_state.drawn_combos)
+    st.table(drawn_df)
+else:
+    st.write("Noch keine Kombinationen gezogen.")
 
 # ============ RESET OPTION ============
 if st.button("🔄 Neue Lottery starten"):
     if os.path.exists(save_file):
         os.remove(save_file)
+    st.session_state.clear()
     st.session_state.remaining_df = generate_combos()
     st.session_state.draft_order = [fixed_pick]
+    st.session_state.drawn_combos = []
     st.session_state.reset_inputs = True
-
 
 st.markdown("---")
 st.caption("Powered by Streamlit • Flensballers Fantasy League 2026 🏀")
+
 
