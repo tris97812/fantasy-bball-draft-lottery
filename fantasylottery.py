@@ -22,6 +22,20 @@ teams = {
     "Benchwarmers United SC": 10
 }
 
+# Session-State Initialisierung
+if "drawn_combos" not in st.session_state:
+    st.session_state.drawn_combos = []
+
+if "draft_order" not in st.session_state:
+    st.session_state.draft_order = [fixed_pick]
+
+if "remaining_df" not in st.session_state:
+    st.session_state.remaining_df = generate_combos()
+
+if "reset_inputs" not in st.session_state:
+    st.session_state.reset_inputs = False
+
+
 fixed_pick = "Flensburger Fantasialand"
 save_file = "lottery_state.csv"
 
