@@ -56,18 +56,19 @@ if "draft_order" not in st.session_state:
 
 if "remaining_df" not in st.session_state:
     st.session_state.remaining_df = generate_combos()
-   
+
 # ==== HIER CSV-Download BUTTON EINFÜGEN ====
 csv_bytes = st.session_state.remaining_df.to_csv(index=False).encode('utf-8')
-    st.download_button(
-        label="📥 CSV der Zuteilungen herunterladen",
-        data=csv_bytes,
-        file_name="lottery_assignments.csv",
-        mime="text/csv"
-    )
+st.download_button(
+    label="📥 CSV der Zuteilungen herunterladen",
+    data=csv_bytes,
+    file_name="lottery_assignments.csv",
+    mime="text/csv"
+)
 
 if "reset_inputs" not in st.session_state:
     st.session_state.reset_inputs = False
+
 
 # ============ UI ============
 st.title("🎲 Flensballers Fantasy Draft Lottery 2026")
