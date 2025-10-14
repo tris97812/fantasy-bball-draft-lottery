@@ -2,7 +2,8 @@ import streamlit as st
 import pandas as pd
 import itertools, random, os
 
-st.set_page_config(page_title="Flensballers Fantasy Draft Lottery 2026", page_icon="🎲", layout="centered")
+st.set_page_config(page_title="Flensballers Fantasy Draft Lottery 2026",
+                   page_icon="🎲", layout="centered")
 
 # ============ TEAMDATEN ============
 teams = {
@@ -27,16 +28,20 @@ save_file = "lottery_state.csv"
 # ============ INITIALISIERUNG ============
 def generate_combos():
     numbers = list(range(1, 15))
-    combos = list(itertools.combinations(numbers, 4))
-    random.shuffle(combos)
-    combos = combos[:1000]
+    all_combos = list(itertools.combinations(numbers, 4))
+    random.shuffle(all_combos)
+    all_combos = all_combos[:1000]
+
     assignments = []
-    i = 0
+    remaining_combos = all_combos.copy()
+
     for team, n in teams.items():
-        for c in combos[i:i+n]:
+        chosen = random.sample(remaining_combos, n)
+        for c in chosen:
             combo_str = " ".join(map(str, sorted(c)))
             assignments.append({"Kombination": combo_str, "Team": team})
-        i += n
+        remaining_combos = [c for c in remaining_combos if c not in chosen]
+
     return pd.DataFrame(assignments)
 
 if "remaining_df" not in st.session_state:
@@ -48,24 +53,21 @@ if "remaining_df" not in st.session_state:
         st.session_state.remaining_df = generate_combos()
         st.session_state.draft_order = [fixed_pick]
 
-# ============ UI ============
-st.title("🎲 Flensballers Fantasy Draft Lottery 2026")
-st.write("Wer kriegt Pick #2-#5?! Pick #1 wurde letztes Jahr hart erkämpft! Herzloichen Glückwunsch nochmal an Jonas!")
-# ============ DRAFT-ORDER ANZEIGE ============
-st.subheader("📊 Aktueller Draft-Order")
-for i, t in enumerate(st.session_state.draft_order, start=1):
-    fest = " (fest)" if i == 1 else ""
-    st.write(f"**Pick {i}:** {t}{fest}")
-st.divider()
-# ============ ZAHLENEINGABE UND ZIEHUNG ============
-st.header("🎲 Neue Kombination ziehen")
-
-# Session-Flag initialisieren
+# Session-Flag für Input-Reset
 if "reset_inputs" not in st.session_state:
     st.session_state.reset_inputs = False
 
+# ============ UI ============
+st.title("🎲 Flensballers Fantasy Draft Lottery 2026")
+st.write("Wer kriegt Pick #2-#5?! Pick #1 wurde letztes Jahr hart erkämpft! Herzlichen Glückwunsch nochmal!")
+st.markdown(f"**Pick #1:** 🏆 {fixed_pick} *(fest vergeben)*")
+st.divider()
+
+# ============ ZAHLENEINGABE ============
+st.header("🎲 Neue Kombination ziehen")
 col1, col2, col3, col4 = st.columns(4)
-z1 = col1.number_input("Zahl 1", min_value=1, max_value=14, step=1, 
+
+z1 = col1.number_input("Zahl 1", min_value=1, max_value=14, step=1,
                        value=1 if st.session_state.reset_inputs else st.session_state.get("z1", 1),
                        key="z1")
 z2 = col2.number_input("Zahl 2", min_value=1, max_value=14, step=1,
@@ -78,75 +80,53 @@ z4 = col4.number_input("Zahl 4", min_value=1, max_value=14, step=1,
                        value=1 if st.session_state.reset_inputs else st.session_state.get("z4", 1),
                        key="z4")
 
-# Flag zurücksetzen, sonst würden die Inputs immer auf 1 springen
 if st.session_state.reset_inputs:
     st.session_state.reset_inputs = False
 
-
+# ============ ZIEHUNGS-LOGIK ============
 if st.button("🎯 Kombination prüfen"):
     combo_nums = [int(z1), int(z2), int(z3), int(z4)]
-
-    # Kombination sortieren
     combo_str = " ".join(map(str, sorted(combo_nums)))
     row = st.session_state.remaining_df.loc[st.session_state.remaining_df["Kombination"] == combo_str]
 
-if not row.empty:
-    team = row.iloc[0]["Team"]
-    if team in st.session_state.draft_order:
-        st.warning(f"⚠️ {team} wurde bereits gezogen.")
+    if not row.empty:
+        team = row.iloc[0]["Team"]
+        if team in st.session_state.draft_order:
+            st.warning(f"⚠️ {team} wurde bereits gezogen.")
+        else:
+            st.success(f"🏆 {team} wurde gezogen!")
+            st.session_state.remaining_df = st.session_state.remaining_df[
+                st.session_state.remaining_df["Team"] != team
+            ]
+            st.session_state.draft_order.append(team)
+            st.session_state.reset_inputs = True
     else:
-        st.success(f"🏆 {team} wurde gezogen!")
-        # Team aus dem Pool entfernen
-        st.session_state.remaining_df = st.session_state.remaining_df[
-            st.session_state.remaining_df["Team"] != team
-        ]
-        # Team direkt der Draft-Order hinzufügen
-        st.session_state.draft_order.append(team)
-        # Inputs zurücksetzen
-        st.session_state.reset_inputs = True
-else:
-    st.error("❌ Kombination nicht gefunden oder bereits gezogen.")
+        st.error("❌ Kombination nicht gefunden oder bereits gezogen.")
 
-# ============ AKTUELLE CHANCEN ============
+# ============ DRAFT-ORDER ANZEIGE ============
+st.subheader("📊 Aktueller Draft-Order")
+for i, t in enumerate(st.session_state.draft_order, start=1):
+    fest = " (fest)" if i == 1 else ""
+    st.write(f"**Pick {i}:** {t}{fest}")
 
 st.divider()
-st.subheader("📈 Aktuelle Wahrscheinlichkeiten (verbleibende Teams)")
 
-# Zähle, wie viele Kombinationen jedes Team noch hat
-remaining_counts = st.session_state.remaining_df["Team"].value_counts().sort_values(ascending=False)
+# ============ DYNAMISCHE WAHRSCHEINLICHKEITEN ============
+st.subheader("📊 Aktuelle Gewinnchancen")
+total_remaining = st.session_state.remaining_df.shape[0]
+team_counts = st.session_state.remaining_df['Team'].value_counts().to_dict()
 
-# Berechne die neuen Prozentwerte
-total_remaining = remaining_counts.sum()
-chances_df = pd.DataFrame({
-    "Team": remaining_counts.index,
-    "Verbleibende Lose": remaining_counts.values,
-    "Chance (%)": (remaining_counts / total_remaining * 100).round(2)
-})
+prob_data = []
+for team in teams.keys():
+    count = team_counts.get(team, 0)
+    prob = (count / total_remaining * 100) if total_remaining > 0 else 0
+    prob_data.append({"Team": team, "Chancen (%)": round(prob,1)})
 
-# Anzeige als Tabelle
-st.dataframe(chances_df, hide_index=True, use_container_width=True)
+prob_df = pd.DataFrame(prob_data).sort_values(by="Chancen (%)", ascending=False)
+st.table(prob_df)
 
-# Optional: Balkendiagramm für visuelle Darstellung
-st.markdown("### 🎞️ Verteilung der Chancen")
-st.bar_chart(
-    data=chances_df.set_index("Team")["Chance (%)"],
-    height=400,
-    use_container_width=True
-)
-
-# ============ FORTSCHRITT SPEICHERN ============
-def save_state():
-    picks_df = pd.DataFrame({
-        "Pick": list(range(1, len(st.session_state.draft_order)+1)),
-        "Team": st.session_state.draft_order
-    })
-    merged = st.session_state.remaining_df.copy()
-    merged["Pick"] = merged["Team"].map({t: i for i, t in enumerate(st.session_state.draft_order, start=1)})
-    merged.to_csv(save_file, index=False)
-
-if st.button("💾 Fortschritt speichern"):
-    save_state()
-    st.success("Fortschritt gespeichert!")
+# Optional: Balkendiagramm
+st.bar_chart(prob_df.set_index("Team")["Chancen (%)"])
 
 # ============ RESET OPTION ============
 if st.button("🔄 Neue Lottery starten"):
@@ -155,4 +135,5 @@ if st.button("🔄 Neue Lottery starten"):
     st.experimental_rerun()
 
 st.markdown("---")
-st.caption("Powered by Streamlit • flensballers fantasy league 2026 🏀")
+st.caption("Powered by Streamlit • Flensballers Fantasy League 2026 🏀")
+
