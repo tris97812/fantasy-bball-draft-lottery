@@ -258,7 +258,7 @@ for i, team in enumerate(st.session_state.draft_order, start=1):
         st.write(f"Pick {i}: {fixed_pick} (fest)")
     else:
         pick_number = i
-        original_percent = draft_odds.get(team, {}).get(pick_number, 0)
+        original_percent = lottery_odds.get(team, {}).get(pick_number, 0)
         # Differenz zur ursprünglichen Position (Liste der Teams als Originalposition)
         original_rank = list(teams.keys()).index(team) + 2  # +2 wegen festem Pick #1
         diff = original_rank - pick_number
