@@ -252,11 +252,19 @@ st.download_button(
 
 # ============ DRAFT-ORDER ANZEIGE ============
 st.subheader("📊 Aktuelle Draft-Reihenfolge")
-for i, t in enumerate(st.session_state.draft_order, start=1):
-    fest = " (fest)" if i == 1 else ""
-    st.write(f"**Pick {i}:** {t}{fest}")
 
-st.divider()
+for i, team in enumerate(st.session_state.draft_order, start=1):
+    if i == 1:
+        st.write(f"Pick {i}: {fixed_pick} (fest)")
+    else:
+        pick_number = i
+        original_percent = draft_odds.get(team, {}).get(pick_number, 0)
+        # Differenz zur ursprünglichen Position (Liste der Teams als Originalposition)
+        original_rank = list(teams.keys()).index(team) + 2  # +2 wegen festem Pick #1
+        diff = original_rank - pick_number
+        diff_text = f"+{diff}" if diff > 0 else f"{diff}" if diff < 0 else "0"
+        st.write(f"Pick {i}: {team} ({original_percent:.2f}%, Δ {diff_text})")
+
 
 # ============ DYNAMISCHE WAHRSCHEINLICHKEITEN ============
 st.subheader("📊 Aktuelle Gewinnchancen")
