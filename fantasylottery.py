@@ -53,7 +53,6 @@ st.title("🎲 Flensballers Fantasy Draft Lottery 2026")
 st.write("Wer kriegt Pick #2-#5?! Pick #1 wurde letztes Jahr hart erkämpft! Herzloichen Glückwunsch nochmal an Jonas!")
 # ============ DRAFT-ORDER ANZEIGE ============
 st.subheader("📊 Aktueller Draft-Order")
-st.markdown(f"**Pick #1:** 🏆 {fixed_pick} *(fest vergeben)*")
 for i, t in enumerate(st.session_state.draft_order, start=1):
     fest = " (fest)" if i == 1 else ""
     st.write(f"**Pick {i}:** {t}{fest}")
