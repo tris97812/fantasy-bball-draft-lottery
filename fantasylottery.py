@@ -130,9 +130,12 @@ st.bar_chart(prob_df.set_index("Team")["Chancen (%)"])
 
 # ============ RESET OPTION ============
 if st.button("🔄 Neue Lottery starten"):
-    os.remove(save_file) if os.path.exists(save_file) else None
-    st.session_state.clear()
-    st.experimental_rerun()
+    if os.path.exists(save_file):
+        os.remove(save_file)
+    st.session_state.remaining_df = generate_combos()
+    st.session_state.draft_order = [fixed_pick]
+    st.session_state.reset_inputs = True
+
 
 st.markdown("---")
 st.caption("Powered by Streamlit • Flensballers Fantasy League 2026 🏀")
