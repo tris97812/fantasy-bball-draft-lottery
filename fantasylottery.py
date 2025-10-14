@@ -195,11 +195,11 @@ if st.button("🎯 Kombination prüfen"):
 
             # Differenz zur Originalposition
             if diff > 0:
-                st.success(f"⬆️ Verbesserung gegenüber Originalplatz: +{diff}")
+                st.success(f"⬆️ Verbesserung: +{diff}")
             elif diff < 0:
-                st.error(f"⬇️ Verschlechterung gegenüber Originalplatz: {diff}")
+                st.error(f"⬇️ Verschlechterung: {diff}")
             else:
-                st.warning("⏺️ Keine Veränderung gegenüber Originalplatz")
+                st.warning("⏺️ Keine Veränderung")
 
             # Entferne alle Combos des Teams aus dem Pott
             st.session_state.remaining_df = st.session_state.remaining_df[
