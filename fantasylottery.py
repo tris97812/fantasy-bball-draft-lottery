@@ -108,6 +108,7 @@ if st.button("🎯 Kombination prüfen"):
             st.warning(f"⚠️ {team} wurde bereits gezogen.")
         else:
             original_chances = teams[team]  # Ursprüngliche Lose / Wahrscheinlichkeit
+            total_original = sum(teams.values()) original_percent = round(original_chances / total_original * 100, 1)
             st.success(f"🏆 {team} wurde gezogen! (Original-Chancen: {original_chances})")
             st.session_state.remaining_df = st.session_state.remaining_df[
                 st.session_state.remaining_df["Team"] != team]
