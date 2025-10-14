@@ -7,7 +7,7 @@ from reportlab.pdfgen import canvas
 
 st.set_page_config(
     page_title="Flensballers Fantasy Draft Lottery 2026",
-    page_icon="🎲",
+    page_icon="🏀",
     layout="centered"
 )
 # Wahrscheinlichkeiten für jede Lottery-Position (basierend auf 10.000 Simulationen)
