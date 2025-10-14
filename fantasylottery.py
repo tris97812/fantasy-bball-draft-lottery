@@ -63,13 +63,6 @@ st.write("Wer kriegt Pick #2-#5?! Pick #1 wurde letztes Jahr hart erkämpft! Her
 st.markdown(f"**Pick #1:** 🏆 {fixed_pick} *(fest vergeben)*")
 st.divider()
 
-st.subheader("📋 Bereits gezogene Kombinationen")
-if st.session_state.drawn_combos:
-    drawn_df = pd.DataFrame(st.session_state.drawn_combos)
-    st.table(drawn_df)
-else:
-    st.write("Noch keine Kombinationen gezogen.")
-
 # ============ ZAHLENEINGABE ============
 st.header("🎲 Neue Kombination ziehen")
 col1, col2, col3, col4 = st.columns(4)
@@ -117,6 +110,13 @@ for i, t in enumerate(st.session_state.draft_order, start=1):
     st.write(f"**Pick {i}:** {t}{fest}")
 
 st.divider()
+
+st.subheader("📋 Bereits gezogene Kombinationen")
+if st.session_state.drawn_combos:
+    drawn_df = pd.DataFrame(st.session_state.drawn_combos)
+    st.table(drawn_df)
+else:
+    st.write("Noch keine Kombinationen gezogen.")
 
 # ============ DYNAMISCHE WAHRSCHEINLICHKEITEN ============
 st.subheader("📊 Aktuelle Gewinnchancen")
