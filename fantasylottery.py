@@ -56,40 +56,52 @@ st.divider()
 # ============ ZAHLENEINGABE UND ZIEHUNG ============
 st.header("🎲 Neue Kombination ziehen")
 
+# Session-Flag initialisieren
+if "reset_inputs" not in st.session_state:
+    st.session_state.reset_inputs = False
+
 col1, col2, col3, col4 = st.columns(4)
-z1 = col1.number_input("Zahl 1", min_value=1, max_value=14, step=1, key="z1")
-z2 = col2.number_input("Zahl 2", min_value=1, max_value=14, step=1, key="z2")
-z3 = col3.number_input("Zahl 3", min_value=1, max_value=14, step=1, key="z3")
-z4 = col4.number_input("Zahl 4", min_value=1, max_value=14, step=1, key="z4")
+z1 = col1.number_input("Zahl 1", min_value=1, max_value=14, step=1, 
+                       value=1 if st.session_state.reset_inputs else st.session_state.get("z1", 1),
+                       key="z1")
+z2 = col2.number_input("Zahl 2", min_value=1, max_value=14, step=1,
+                       value=1 if st.session_state.reset_inputs else st.session_state.get("z2", 1),
+                       key="z2")
+z3 = col3.number_input("Zahl 3", min_value=1, max_value=14, step=1,
+                       value=1 if st.session_state.reset_inputs else st.session_state.get("z3", 1),
+                       key="z3")
+z4 = col4.number_input("Zahl 4", min_value=1, max_value=14, step=1,
+                       value=1 if st.session_state.reset_inputs else st.session_state.get("z4", 1),
+                       key="z4")
+
+# Flag zurücksetzen, sonst würden die Inputs immer auf 1 springen
+if st.session_state.reset_inputs:
+    st.session_state.reset_inputs = False
+
 
 if st.button("🎯 Kombination prüfen"):
     combo_nums = [int(z1), int(z2), int(z3), int(z4)]
-    
-    # Prüfe auf Duplikate
-    if len(set(combo_nums)) < 4:
-        st.warning("⚠️ Bitte vier verschiedene Zahlen eingeben!")
-    else:
-        combo_str = " ".join(map(str, sorted(combo_nums)))
-        row = st.session_state.remaining_df.loc[st.session_state.remaining_df["Kombination"] == combo_str]
 
-        if not row.empty:
-            team = row.iloc[0]["Team"]
-            if team in st.session_state.draft_order:
-                st.warning(f"⚠️ {team} wurde bereits gezogen.")
-            else:
-                st.success(f"🏆 {team} wurde gezogen!")
-                st.session_state.remaining_df = st.session_state.remaining_df[
-                    st.session_state.remaining_df["Team"] != team
-                ]
-                st.session_state.draft_order.append(team)
+    # Kombination sortieren
+    combo_str = " ".join(map(str, sorted(combo_nums)))
+    row = st.session_state.remaining_df.loc[st.session_state.remaining_df["Kombination"] == combo_str]
 
-                # Felder leeren
-                st.session_state.z1 = 1
-                st.session_state.z2 = 1
-                st.session_state.z3 = 1
-                st.session_state.z4 = 1
+    if not row.empty:
+        team = row.iloc[0]["Team"]
+        if team in st.session_state.draft_order:
+            st.warning(f"⚠️ {team} wurde bereits gezogen.")
         else:
-            st.error("❌ Kombination nicht gefunden oder bereits gezogen.")
+            st.success(f"🏆 {team} wurde gezogen!")
+            st.session_state.remaining_df = st.session_state.remaining_df[
+                st.session_state.remaining_df["Team"] != team
+            ]
+            st.session_state.draft_order.append(team)
+
+            # Reset der Inputs über Session-Flag
+            st.session_state.reset_inputs = True
+    else:
+        st.error("❌ Kombination nicht gefunden oder bereits gezogen.")
+
 
 
 # ============ DRAFT-ORDER ANZEIGE ============
