@@ -213,6 +213,45 @@ from io import BytesIO
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 
+# ============ DRAFT-ORDER ANZEIGE ============
+st.subheader("📊 Aktuelle Draft-Reihenfolge")
+
+for i, team in enumerate(st.session_state.draft_order, start=1):
+    if i == 1:
+        st.write(f"Pick {i}: {fixed_pick} (fest)")
+    else:
+        pick_number = i
+        original_percent = lottery_odds.get(team, {}).get(pick_number, 0)
+        # Differenz zur ursprünglichen Position (Liste der Teams als Originalposition)
+        original_rank = list(teams.keys()).index(team) + 2  # +2 wegen festem Pick #1
+        diff = original_rank - pick_number
+        diff_text = f"+{diff}" if diff > 0 else f"{diff}" if diff < 0 else "0"
+        st.write(f"Pick {i}: {team} ({original_percent:.2f}%, Δ {diff_text})")
+
+# ==================== LIVEANZEIGE ====================
+st.markdown(f"##### 🎯 Anzahl verbleibender Lose im Pott: **{len(st.session_state.remaining_df)}**")
+# ============ DYNAMISCHE WAHRSCHEINLICHKEITEN ============
+st.subheader("📊 Aktuelle Gewinnchancen")
+total_remaining = st.session_state.remaining_df.shape[0]
+team_counts = st.session_state.remaining_df['Team'].value_counts().to_dict()
+
+prob_data = []
+for team in teams.keys():
+    count = team_counts.get(team, 0)
+    prob = (count / total_remaining * 100) if total_remaining > 0 else 0
+    prob_data.append({"Team": team, "Anteil der Lose im Topf (%)": round(prob,1)})
+
+prob_df = pd.DataFrame(prob_data).sort_values(by="Anteil der Lose im Topf (%)", ascending=False)
+st.table(prob_df)
+st.bar_chart(prob_df.set_index("Team")["Anteil der Lose im Topf (%)"])
+
+# ============ GEZOGENE KOMBINATIONEN ============
+st.subheader("📋 Bereits gezogene Lose")
+if st.session_state.drawn_combos:
+    drawn_df = pd.DataFrame(st.session_state.drawn_combos)
+    st.table(drawn_df)
+else:
+    st.write("Noch keine Lose gezogen.")
 # ==================== PDF-DOWNLOAD ====================
 def generate_draft_pdf(draft_order):
     buffer = BytesIO()
@@ -246,47 +285,6 @@ st.download_button(
     file_name="draft_order.pdf",
     mime="application/pdf"
 )
-# ==================== LIVEANZEIGE ====================
-st.markdown(f"##### 🎯 Anzahl verbleibender Lose im Pott: **{len(st.session_state.remaining_df)}**")
-# ============ DRAFT-ORDER ANZEIGE ============
-st.subheader("📊 Aktuelle Draft-Reihenfolge")
-
-for i, team in enumerate(st.session_state.draft_order, start=1):
-    if i == 1:
-        st.write(f"Pick {i}: {fixed_pick} (fest)")
-    else:
-        pick_number = i
-        original_percent = lottery_odds.get(team, {}).get(pick_number, 0)
-        # Differenz zur ursprünglichen Position (Liste der Teams als Originalposition)
-        original_rank = list(teams.keys()).index(team) + 2  # +2 wegen festem Pick #1
-        diff = original_rank - pick_number
-        diff_text = f"+{diff}" if diff > 0 else f"{diff}" if diff < 0 else "0"
-        st.write(f"Pick {i}: {team} ({original_percent:.2f}%, Δ {diff_text})")
-
-
-# ============ DYNAMISCHE WAHRSCHEINLICHKEITEN ============
-st.subheader("📊 Aktuelle Gewinnchancen")
-total_remaining = st.session_state.remaining_df.shape[0]
-team_counts = st.session_state.remaining_df['Team'].value_counts().to_dict()
-
-prob_data = []
-for team in teams.keys():
-    count = team_counts.get(team, 0)
-    prob = (count / total_remaining * 100) if total_remaining > 0 else 0
-    prob_data.append({"Team": team, "Anteil der Lose im Topf (%)": round(prob,1)})
-
-prob_df = pd.DataFrame(prob_data).sort_values(by="Anteil der Lose im Topf (%)", ascending=False)
-st.table(prob_df)
-st.bar_chart(prob_df.set_index("Team")["Anteil der Lose im Topf (%)"])
-
-# ============ GEZOGENE KOMBINATIONEN ============
-st.subheader("📋 Bereits gezogene Lose")
-if st.session_state.drawn_combos:
-    drawn_df = pd.DataFrame(st.session_state.drawn_combos)
-    st.table(drawn_df)
-else:
-    st.write("Noch keine Lose gezogen.")
-
 # ============ RESET OPTION ============
 if st.button("🔄 Neue Lottery starten"):
     if os.path.exists(save_file):
