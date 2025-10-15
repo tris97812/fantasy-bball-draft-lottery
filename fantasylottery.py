@@ -213,9 +213,6 @@ from io import BytesIO
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 
-# ==================== LIVEANZEIGE ====================
-st.markdown(f"##### 🎯 Anzahl verbleibender Lose im Pott: **{len(st.session_state.remaining_df)}**")
-
 # ==================== PDF-DOWNLOAD ====================
 def generate_draft_pdf(draft_order):
     buffer = BytesIO()
@@ -249,7 +246,8 @@ st.download_button(
     file_name="draft_order.pdf",
     mime="application/pdf"
 )
-
+# ==================== LIVEANZEIGE ====================
+st.markdown(f"##### 🎯 Anzahl verbleibender Lose im Pott: **{len(st.session_state.remaining_df)}**")
 # ============ DRAFT-ORDER ANZEIGE ============
 st.subheader("📊 Aktuelle Draft-Reihenfolge")
 
