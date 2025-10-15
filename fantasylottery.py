@@ -135,7 +135,39 @@ st.download_button(
 
 if "reset_inputs" not in st.session_state:
     st.session_state.reset_inputs = False
+# ==================== PDF-DOWNLOAD ====================
+def generate_draft_pdf(draft_order):
+    buffer = BytesIO()
+    p = canvas.Canvas(buffer, pagesize=A4)
+    width, height = A4
 
+    # Titel
+    p.setFont("Helvetica-Bold", 16)
+    p.drawString(50, height - 50, "Flensballers Fantasy Draft Lottery 2026")
+
+    # Inhalt
+    p.setFont("Helvetica", 12)
+    y = height - 90
+    for i, team in enumerate(draft_order, start=1):
+        p.drawString(50, y, f"{i}. {team}")
+        y -= 20
+        if y < 50:  # Neue Seite bei Platzmangel
+            p.showPage()
+            p.setFont("Helvetica", 12)
+            y = height - 50
+
+    p.save()
+    buffer.seek(0)
+    return buffer
+
+# PDF immer verfügbar machen
+pdf_buffer = generate_draft_pdf(st.session_state.draft_order)
+st.download_button(
+    label="📄 Ergebnisse als PDF herunterladen",
+    data=pdf_buffer,
+    file_name="draft_order.pdf",
+    mime="application/pdf"
+)
 
 # ============ UI ============
 st.title("🏀 Flensballers Fantasy Draft Lottery 2026")
@@ -252,39 +284,7 @@ if st.session_state.drawn_combos:
     st.table(drawn_df)
 else:
     st.write("Noch keine Lose gezogen.")
-# ==================== PDF-DOWNLOAD ====================
-def generate_draft_pdf(draft_order):
-    buffer = BytesIO()
-    p = canvas.Canvas(buffer, pagesize=A4)
-    width, height = A4
 
-    # Titel
-    p.setFont("Helvetica-Bold", 16)
-    p.drawString(50, height - 50, "Flensballers Fantasy Draft Lottery 2026")
-
-    # Inhalt
-    p.setFont("Helvetica", 12)
-    y = height - 90
-    for i, team in enumerate(draft_order, start=1):
-        p.drawString(50, y, f"{i}. {team}")
-        y -= 20
-        if y < 50:  # Neue Seite bei Platzmangel
-            p.showPage()
-            p.setFont("Helvetica", 12)
-            y = height - 50
-
-    p.save()
-    buffer.seek(0)
-    return buffer
-
-# PDF immer verfügbar machen
-pdf_buffer = generate_draft_pdf(st.session_state.draft_order)
-st.download_button(
-    label="📄 Draft-Reihenfolge als PDF herunterladen",
-    data=pdf_buffer,
-    file_name="draft_order.pdf",
-    mime="application/pdf"
-)
 # ============ RESET OPTION ============
 if st.button("🔄 Neue Lottery starten"):
     if os.path.exists(save_file):
