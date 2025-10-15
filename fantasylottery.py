@@ -143,7 +143,7 @@ st.write("Pick #1 wurde letztes Jahr hart erkämpft! Shoutout an Jonas!! Doch we
 st.divider()
 
 # ============ ZAHLENEINGABE ============
-st.header("🎲 Neue Kombination ziehen")
+st.header("🎲 Neues Los ziehen")
 col1, col2, col3, col4 = st.columns(4)
 
 z1 = col1.number_input("Zahl 1", min_value=1, max_value=14, step=1,
@@ -163,7 +163,7 @@ if st.session_state.reset_inputs:
     st.session_state.reset_inputs = False
     
 # ============ ZIEHUNGS-LOGIK ============
-if st.button("🎯 Kombination prüfen"):
+if st.button("🎯 Los prüfen"):
     combo_nums = [int(z1), int(z2), int(z3), int(z4)]
     combo_str = " ".join(map(str, sorted(combo_nums)))
     row = st.session_state.remaining_df.loc[st.session_state.remaining_df["Kombination"] == combo_str]
@@ -214,7 +214,7 @@ from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 
 # ==================== LIVEANZEIGE ====================
-st.markdown(f"##### 🎯 Verbleibende Kombinationen: **{len(st.session_state.remaining_df)}**")
+st.markdown(f"##### 🎯 Anzahl verbleibender Lose im Pott: **{len(st.session_state.remaining_df)}**")
 
 # ==================== PDF-DOWNLOAD ====================
 def generate_draft_pdf(draft_order):
@@ -282,12 +282,12 @@ st.table(prob_df)
 st.bar_chart(prob_df.set_index("Team")["Anteil der Lose im Topf (%)"])
 
 # ============ GEZOGENE KOMBINATIONEN ============
-st.subheader("📋 Bereits gezogene Kombinationen")
+st.subheader("📋 Bereits gezogene Lose")
 if st.session_state.drawn_combos:
     drawn_df = pd.DataFrame(st.session_state.drawn_combos)
     st.table(drawn_df)
 else:
-    st.write("Noch keine Kombinationen gezogen.")
+    st.write("Noch keine Lose gezogen.")
 
 # ============ RESET OPTION ============
 if st.button("🔄 Neue Lottery starten"):
