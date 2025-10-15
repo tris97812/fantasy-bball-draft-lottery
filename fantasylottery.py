@@ -15,8 +15,8 @@ st.set_page_config(
 # "LotteryDrawPick1" entspricht overall Pick #2, "LotteryDrawPick13" entspricht overall Pick #14.
 lottery_odds = {
     "OG Kobolde": {
-        1: 13.98, 2: 13.33, 3: 12.91, 4: 11.57, 5: 11.07, 6: 10.27,
-        7: 8.60, 8: 7.37, 9: 5.26, 10: 3.32, 11: 1.79, 12: 0.47, 13: 0.06
+        2: 13.98, 3: 13.33, 4: 12.91, 5: 11.57, 6: 11.07, 7: 10.27,
+        8: 8.60, 9: 7.37, 10: 5.26, 11: 3.32, 12: 1.79, 13: 0.47, 14: 0.06
     },
     "Luca Magic": {
         1: 14.24, 2: 13.50, 3: 13.22, 4: 12.18, 5: 11.85, 6: 10.93,
@@ -30,7 +30,7 @@ lottery_odds = {
         1: 12.64, 2: 12.32, 3: 11.66, 4: 11.68, 5: 10.80, 6: 10.90,
         7: 9.10, 8: 7.86, 9: 6.35, 10: 4.45, 11: 2.00, 12: 0.84, 13: 0.20
     },
-    "Tim": {
+    "Tim's Resterampe": {
         1: 10.80, 2: 10.75, 3: 10.58, 4: 10.49, 5: 10.65, 6: 11.10,
         7: 10.28, 8: 10.20, 9: 8.30, 10: 7.20, 11: 2.86, 12: 1.05, 13: 0.31
     },
@@ -76,11 +76,11 @@ def get_lottery_odds(team: str, pick_number: int) -> float:
 # ============ TEAMDATEN ============
 # Lose überarbeiten - lenno, luka, jonas klar abgrenzen
 teams = {
-    "OG Kobolde": 140,
+    "OG Kobolde": 160,
     "Luca Magic": 140,
-    "Jonas Darkhorses": 140,
-    "Team 0 vom Drei": 125,
-    "Tim": 110,
+    "Jonas Darkhorses": 130,
+    "Team 0 vom Drei": 115,
+    "Tim's Resterampe": 110,
     "FL Hot Dogs": 90,
     "Schnelle Brecher": 75,
     "Team Franzmann": 60,
