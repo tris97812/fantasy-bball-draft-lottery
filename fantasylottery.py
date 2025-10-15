@@ -248,7 +248,6 @@ from reportlab.pdfgen import canvas
 
 # ============ DRAFT-ORDER ANZEIGE ============
 st.subheader("📊 Aktuelle Draft-Reihenfolge")
-st.markdown(f"🎯 Anzahl verbleibender Lose im Pott: **{len(st.session_state.remaining_df)}**")
 for i, team in enumerate(st.session_state.draft_order, start=1):
     if i == 1:
         st.write(f"Pick {i}: {fixed_pick} (fest)")
@@ -263,6 +262,7 @@ for i, team in enumerate(st.session_state.draft_order, start=1):
 st.divider()
 # ============ DYNAMISCHE WAHRSCHEINLICHKEITEN ============
 st.subheader("📊 Aktuelle Gewinnchancen")
+st.markdown(f"🎯 Anzahl verbleibender Lose im Pott: **{len(st.session_state.remaining_df)}**")
 total_remaining = st.session_state.remaining_df.shape[0]
 team_counts = st.session_state.remaining_df['Team'].value_counts().to_dict()
 
