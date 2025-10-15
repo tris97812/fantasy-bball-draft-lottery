@@ -176,6 +176,7 @@ st.divider()
 
 # ============ ZAHLENEINGABE ============
 st.header("🎲 Neues Los ziehen")
+st.write("Schreibe die Zahlen 1-14 auf 14 Zettel. Falte die Zettelchen und tue sie in ein Glas. Ziehe vier Zettel aus dem Glas, ohne die Zettel zurück ins Glas zu legen. Gebe die Zahlen der vier Zettelchen hier ein."  ")
 col1, col2, col3, col4 = st.columns(4)
 
 z1 = col1.number_input("Zahl 1", min_value=1, max_value=14, step=1,
@@ -247,7 +248,7 @@ from reportlab.pdfgen import canvas
 
 # ============ DRAFT-ORDER ANZEIGE ============
 st.subheader("📊 Aktuelle Draft-Reihenfolge")
-
+st.markdown(f"######## 🎯 Anzahl verbleibender Lose im Pott: **{len(st.session_state.remaining_df)}**")
 for i, team in enumerate(st.session_state.draft_order, start=1):
     if i == 1:
         st.write(f"Pick {i}: {fixed_pick} (fest)")
@@ -260,8 +261,6 @@ for i, team in enumerate(st.session_state.draft_order, start=1):
         diff_text = f"+{diff}" if diff > 0 else f"{diff}" if diff < 0 else "0"
         st.write(f"Pick {i}: {team} ({original_percent:.2f}%, Δ {diff_text})")
 st.divider()
-# ==================== LIVEANZEIGE ====================
-st.markdown(f"##### 🎯 Anzahl verbleibender Lose im Pott: **{len(st.session_state.remaining_df)}**")
 # ============ DYNAMISCHE WAHRSCHEINLICHKEITEN ============
 st.subheader("📊 Aktuelle Gewinnchancen")
 total_remaining = st.session_state.remaining_df.shape[0]
