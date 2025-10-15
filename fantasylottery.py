@@ -248,7 +248,7 @@ from reportlab.pdfgen import canvas
 
 # ============ DRAFT-ORDER ANZEIGE ============
 st.subheader("📊 Aktuelle Draft-Reihenfolge")
-st.markdown(f"######## 🎯 Anzahl verbleibender Lose im Pott: **{len(st.session_state.remaining_df)}**")
+st.markdown(f"🎯 Anzahl verbleibender Lose im Pott: **{len(st.session_state.remaining_df)}**")
 for i, team in enumerate(st.session_state.draft_order, start=1):
     if i == 1:
         st.write(f"Pick {i}: {fixed_pick} (fest)")
