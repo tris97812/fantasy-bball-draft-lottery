@@ -176,7 +176,7 @@ st.divider()
 
 # ============ ZAHLENEINGABE ============
 st.header("🎲 Neues Los ziehen")
-st.write("Schreibe die Zahlen 1-14 auf 14 Zettel. Falte die Zettelchen und tue sie in ein Glas. Ziehe vier Zettel aus dem Glas, ohne die Zettel zurück ins Glas zu legen. Gebe die Zahlen der vier Zettelchen hier ein."  ")
+st.write("Schreibe die Zahlen 1-14 auf 14 Zettel. Falte die Zettelchen und tue sie in ein Glas. Ziehe vier Zettel aus dem Glas, ohne die Zettel zurück ins Glas zu legen. Gebe die Zahlen der vier Zettelchen hier ein.")
 col1, col2, col3, col4 = st.columns(4)
 
 z1 = col1.number_input("Zahl 1", min_value=1, max_value=14, step=1,
