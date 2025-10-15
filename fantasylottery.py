@@ -13,7 +13,6 @@ st.set_page_config(
 # Wahrscheinlichkeiten für jede Lottery-Position (basierend auf 10.000 Simulationen)
 # Hinweis:
 # "LotteryDrawPick1" entspricht overall Pick #2, "LotteryDrawPick13" entspricht overall Pick #14.
-# mit CHATTI überarbeiten! muss von 2-14 gehen
 lottery_odds = {
     "OG Kobolde": {
         1: 13.98, 2: 13.33, 3: 12.91, 4: 11.57, 5: 11.07, 6: 10.27,
