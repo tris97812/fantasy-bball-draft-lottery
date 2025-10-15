@@ -62,11 +62,11 @@ def get_lottery_odds(team: str, pick_number: int) -> float:
         return None
 # ============ TEAMDATEN ============
 teams = {
-    "OG Kobolde": 160,
-    "Luca Magic": 140,
+    "OG Kobolde": 170,
+    "Luca Magic": 145,
     "Jonas Darkhorses": 130,
-    "Team 0 vom Drei": 115,
-    "Tim's Resterampe": 110,
+    "Team 0 vom Drei": 110,
+    "Tim's Resterampe": 100,
     "FL Hot Dogs": 90,
     "Schnelle Brecher": 75,
     "Team Franzmann": 60,
