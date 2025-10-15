@@ -259,7 +259,7 @@ for i, team in enumerate(st.session_state.draft_order, start=1):
         diff = original_rank - pick_number
         diff_text = f"+{diff}" if diff > 0 else f"{diff}" if diff < 0 else "0"
         st.write(f"Pick {i}: {team} ({original_percent:.2f}%, Δ {diff_text})")
-
+st.divider()
 # ==================== LIVEANZEIGE ====================
 st.markdown(f"##### 🎯 Anzahl verbleibender Lose im Pott: **{len(st.session_state.remaining_df)}**")
 # ============ DYNAMISCHE WAHRSCHEINLICHKEITEN ============
