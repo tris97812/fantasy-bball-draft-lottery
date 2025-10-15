@@ -275,11 +275,11 @@ prob_data = []
 for team in teams.keys():
     count = team_counts.get(team, 0)
     prob = (count / total_remaining * 100) if total_remaining > 0 else 0
-    prob_data.append({"Team": team, "Chancen (%)": round(prob,1)})
+    prob_data.append({"Team": team, "Anteil der Lose im Topf (%)": round(prob,1)})
 
-prob_df = pd.DataFrame(prob_data).sort_values(by="Chancen (%)", ascending=False)
+prob_df = pd.DataFrame(prob_data).sort_values(by="Anteil der Lose im Topf (%)", ascending=False)
 st.table(prob_df)
-st.bar_chart(prob_df.set_index("Team")["Chancen (%)"])
+st.bar_chart(prob_df.set_index("Team")["Anteil der Lose im Topf (%)"])
 
 # ============ GEZOGENE KOMBINATIONEN ============
 st.subheader("📋 Bereits gezogene Kombinationen")
