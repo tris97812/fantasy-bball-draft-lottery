@@ -240,7 +240,7 @@ if st.button("🎯 Los prüfen"):
             st.session_state.drawn_combos.append({"Kombination": combo_str, "Team": team, "Original_Chancen": original_chances})
     else:
         st.error("❌ Kombination nicht gefunden oder bereits gezogen.")
-
+st.divider()
 from io import BytesIO
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
